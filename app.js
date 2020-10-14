@@ -1,15 +1,60 @@
+const path = require("path");
+const fs = require("fs");
+const inquirer = require("inquirer");
 const Manager = require("./lib/Manager");
 const Engineer = require("./lib/Engineer");
 const Intern = require("./lib/Intern");
-const inquirer = require("inquirer");
-const path = require("path");
-const fs = require("fs");
-
-const OUTPUT_DIR = path.resolve(__dirname, "output");
-const outputPath = path.join(OUTPUT_DIR, "team.html");
-
 const render = require("./lib/htmlRenderer");
 
+const outputPath = path.join(__dirname, "./output/team.html")
+
+inquirer
+    .prompt([
+        /* Pass your questions in here */
+        {
+            name: "name",
+            message: "What is your name?"
+        }, {
+
+            name: "id",
+            message: "What is your employee id?"
+        }, {
+            name: "email",
+            message: "What is your email?"
+        }, {
+            name: "officeNumber",
+            message: "What is your office number?"
+        }
+    ])
+    .then(answers => {
+        // Use user feedback for... whatever!!
+        console.log(answers)
+        console.log(answers.id)
+        console.log(answers.name)
+        console.log(answers.email)
+        console.log(answers.officeNumber)
+        const manager = new Manager(answers.name, answers.id, answers.email, answers.officeNumber)
+        console.log(manager)
+        const result = render([
+            manager
+        ])
+        console.log(result)
+        console.log(outputPath)
+        fs.writeFile(outputPath, result, "utf8", (err) => {
+            if(err) {
+                console.log(err) 
+                return
+            } 
+            console.log(done)
+        })
+    })
+    .catch(error => {
+        if (error.isTtyError) {
+            // Prompt couldn't be rendered in the current environment
+        } else {
+            // Something else when wrong
+        }
+    });
 
 // Write code to use inquirer to gather information about the development team members,
 // and to create objects for each team member (using the correct classes as blueprints!)
